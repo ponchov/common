@@ -9,7 +9,7 @@ SRC=/usr/local/src
 WEBROOT=/var/www/ajaxplorer
 ADMIN_PASS=turnkey
 
-VERSION="stable-channel/4.2.3/ajaxplorer-core-4.2.3.tar.gz"
+VERSION="stable-channel/5.0.3/ajaxplorer-core-5.0.3.tar.gz"
 URL="http://sourceforge.net/projects/ajaxplorer/files/ajaxplorer/$VERSION"
 
 # download and unpack
@@ -21,11 +21,14 @@ mv $(dirname $WEBROOT)/ajaxplorer-core-* $WEBROOT
 cp -TdR $SRC/ajaxplorer.overlay $WEBROOT
 chown -R www-data:www-data $WEBROOT/data
 
+# Configure output_buffering parameter in php.ini
+sed -i 's/output_buffering\ =\ 4096/output_buffering\ =\ Off/' /etc/php5/cgi/php.ini
+
 # initial setup
 lighty-enable-mod fastcgi
 lighty-enable-mod fastcgi-php
 /etc/init.d/lighttpd start
-curl http://127.0.0.1/index.php?ignore_tests=true >/dev/null
+curl http://127.0.0.1/index.php?ignore_tests=true > /dev/null
 /etc/init.d/lighttpd stop
 
 # set default conf
